@@ -15,7 +15,6 @@ class _IeeeConverterState extends State<IeeeConverter> {
 
   String normalized = "";
   String convertToIeee(String number) {
-    List decimal = number.split("");
     String sign = double.parse(number) < 0 ? "1" : "0";
     List nums = number.split("");
     nums.remove("-");
