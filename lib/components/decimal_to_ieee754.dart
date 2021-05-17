@@ -19,10 +19,14 @@ class _IeeeConverterState extends State<IeeeConverter> {
     List nums = number.split("");
     nums.remove("-");
     number = nums.join("");
-
+    bool rare = false;
     bool recurrent = false;
     List binary = bc.convert(number);
     if (binary.contains("[")) recurrent = true;
+    if (binary[1] == "[") {
+      binary.insert(1, ".");
+      rare = true;
+    }
 
     List period = recurrent
         ? binary.sublist(binary.indexOf("[") + 1, binary.indexOf("]"))
@@ -33,9 +37,12 @@ class _IeeeConverterState extends State<IeeeConverter> {
 
     int exponent = binary.indexOf(".") - binary.indexOf(1);
     exponent < 0 ? null : exponent -= 1;
+    if (rare) exponent += 1;
+
     setState(() {
       exponentM = exponent;
     });
+
     int movedExponent = exponent + 127;
 
     //first 8 bits
