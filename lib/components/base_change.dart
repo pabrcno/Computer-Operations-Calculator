@@ -14,6 +14,33 @@ class _BaseChangerState extends State<BaseChanger> {
   BaseConverter baseConverter;
   List result;
 
+  List resultAdapter(List result) {
+    List fixed = [];
+
+    result.forEach((element) {
+      element == 10
+          ? element = "A"
+          : element == 11
+              ? element = "B"
+              : element == 12
+                  ? element = "C"
+                  : element == 13
+                      ? element = "D"
+                      : element == 14
+                          ? element = "E"
+                          : element == 15
+                              ? element = "F"
+                              : element == 16
+                                  ? element = "G"
+                                  : element = element;
+      fixed.add(element);
+    });
+    if (int.parse(this.outputBase) > 10)
+      return fixed;
+    else
+      return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -91,7 +118,7 @@ class _BaseChangerState extends State<BaseChanger> {
                     baseConverter = BaseConverter(
                         inBase: int.parse(base),
                         outBase: int.parse(outputBase));
-                    result = baseConverter.convert(number);
+                    result = resultAdapter(baseConverter.convert(number));
                     show = true;
                   });
                 },
