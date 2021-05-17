@@ -10,23 +10,33 @@ class _IeeeConverterState extends State<IeeeConverter> {
   String number = "";
   bool show = false;
   String ieee;
-  BaseConverter bc = BaseConverter(inBase: 10, outBase: 2);
+  BaseConverter bc = BaseConverter(inBase: 10, outBase: 2, maxDepth: 23);
+  int exponentM;
+
+  String normalized = "";
   String convertToIeee(String number) {
     List decimal = number.split("");
     String sign = double.parse(number) < 0 ? "1" : "0";
+    List nums = number.split("");
+    nums.remove("-");
+    number = nums.join("");
+
     bool recurrent = false;
     List binary = bc.convert(number);
     if (binary.contains("[")) recurrent = true;
 
     List period = recurrent
-        ? binary.sublist(binary.indexOf("["), binary.indexOf("]") - 1)
+        ? binary.sublist(binary.indexOf("[") + 1, binary.indexOf("]"))
         : null;
-    binary.remove("-");
+
     binary.remove("[");
     binary.remove("]");
 
     int exponent = binary.indexOf(".") - binary.indexOf(1);
-    exponent < 0 ? exponent += 1 : exponent -= 1;
+    exponent < 0 ? null : exponent -= 1;
+    setState(() {
+      exponentM = exponent;
+    });
     int movedExponent = exponent + 127;
 
     //first 8 bits
@@ -42,15 +52,12 @@ class _IeeeConverterState extends State<IeeeConverter> {
 
     String mantissa = binary.join("");
 
-    String ieee = sign + movedExponentB + mantissa;
+    String ieee = sign + "|" + movedExponentB + "|" + mantissa;
 
     while (ieee.length <= 32) {
       recurrent ? ieee += period.join("") : ieee += "0";
     }
-    print("binary float");
-    print(binary);
-    print("ieee754");
-    print(ieee);
+    return ieee;
   }
 
   @override
@@ -102,7 +109,7 @@ class _IeeeConverterState extends State<IeeeConverter> {
                   style: TextStyle(fontSize: 18),
                 )),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
+              height: MediaQuery.of(context).size.height * 0.01,
             ),
             show
                 ? Container(
@@ -110,6 +117,23 @@ class _IeeeConverterState extends State<IeeeConverter> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Exponente: 2^$exponentM",
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                            Text(
+                              "Mantisa:  ${bc.convert(number).join('')}",
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                          ],
+                        )),
+                        SizedBox(height: 10),
                         Center(
                             child: Text(
                           "Resultado:",
@@ -118,7 +142,7 @@ class _IeeeConverterState extends State<IeeeConverter> {
                         SizedBox(height: 20),
                         Text(
                           "$ieee",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
+                          style: TextStyle(fontSize: 16.8, color: Colors.white),
                         ),
                         SizedBox(height: 10),
                       ],

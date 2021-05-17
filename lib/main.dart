@@ -1,7 +1,7 @@
 import 'package:cac/components/base_change.dart';
 import 'package:cac/components/bcd_aiken.dart';
 import 'package:cac/components/bcd_sum_converter.dart';
-import 'package:cac/components/iee754.dart';
+import 'package:cac/components/decimal_to_ieee754.dart';
 
 import 'package:flutter/material.dart';
 
@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        "0.0.1",
+                        "0.0.2",
                         style: TextStyle(color: Colors.white),
                       ),
                       Text(
