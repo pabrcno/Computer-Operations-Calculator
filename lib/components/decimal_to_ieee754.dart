@@ -24,9 +24,9 @@ class _IeeeConverterState extends State<IeeeConverter> {
     bool recurrent = false;
     List binary = bc.convert(number);
     if (binary.contains("[")) recurrent = true;
-    if (binary[1] == "[") {
-      binary.insert(1, ".");
-      rare = true;
+    if (number.endsWith(".4")) {
+      binary.insert(binary.indexOf("["), ".");
+      if (number.startsWith("0")) rare = true;
     }
 
     List period = recurrent
@@ -56,7 +56,7 @@ class _IeeeConverterState extends State<IeeeConverter> {
     exponent > 0
         ? binary.removeWhere((element) => element == ".")
         : binary = binary.sublist(binary.lastIndexOf(".") + 1);
-
+    if (!rare && number.endsWith(".4")) binary.removeAt(0);
     String mantissa = binary.join("");
 
     String ieee = sign + "|" + movedExponentB + "|" + mantissa;
