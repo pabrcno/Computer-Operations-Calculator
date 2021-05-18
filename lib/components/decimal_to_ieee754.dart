@@ -24,7 +24,11 @@ class _IeeeConverterState extends State<IeeeConverter> {
     bool recurrent = false;
     List binary = bc.convert(number);
     if (binary.contains("[")) recurrent = true;
-    if (number.endsWith(".4")) {
+    if (number.endsWith(".2")) {
+      binary.insert(binary.indexOf("[") + 1, "0");
+      binary.insert(binary.indexOf("[") + 1, "0");
+    }
+    if (number.endsWith(".4") || number.endsWith(".2")) {
       binary.insert(binary.indexOf("["), ".");
       if (number.startsWith("0")) rare = true;
     }
@@ -32,12 +36,16 @@ class _IeeeConverterState extends State<IeeeConverter> {
     List period = recurrent
         ? binary.sublist(binary.indexOf("[") + 1, binary.indexOf("]"))
         : null;
-
+    if (number.endsWith(".2")) {
+      period.removeAt(0);
+      period.removeAt(0);
+    }
     binary.remove("[");
     binary.remove("]");
 
     int exponent = binary.indexOf(".") - binary.indexOf(1);
     exponent < 0 ? null : exponent -= 1;
+    if (number.endsWith(".2")) rare = false;
     if (rare) exponent += 1;
 
     setState(() {
@@ -56,7 +64,13 @@ class _IeeeConverterState extends State<IeeeConverter> {
     exponent > 0
         ? binary.removeWhere((element) => element == ".")
         : binary = binary.sublist(binary.lastIndexOf(".") + 1);
-    if (!rare && number.endsWith(".4")) binary.removeAt(0);
+    if (!rare && (number.endsWith(".4") || number.endsWith(".4")))
+      binary.removeAt(0);
+    if (number.endsWith(".2") && !double.parse(number).truncate().isEven) {
+      binary.removeAt(0);
+      binary.removeAt(0);
+      binary.removeAt(0);
+    }
     String mantissa = binary.join("");
 
     String ieee = sign + "|" + movedExponentB + "|" + mantissa;
